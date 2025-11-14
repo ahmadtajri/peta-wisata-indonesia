@@ -1,0 +1,17 @@
+# STUDENT INFO
+Nama: Ahmad Tajri
+ID Dicoding: F262D5Y0110
+
+# API INFO
+API Base URL: https://story-api.dicoding.dev/v1/
+API Key: (Tidak diperlukan)
+
+# Catatan
+Gunakan API endpoint resmi Dicoding Story API:
+https://story-api.dicoding.dev/v1/
+
+Contoh Endpoint:
+- POST /register
+- POST /login
+- GET /stories
+- POST /stories
