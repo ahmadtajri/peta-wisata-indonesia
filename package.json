@@ -9,6 +9,9 @@
     "dev": "webpack serve --config webpack.dev.js"
   },
   "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "leaflet": "^1.9.4"
   },
   "devDependencies": {
@@ -21,6 +24,7 @@
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.7.0",
     "style-loader": "^3.3.0",
+    "web-push": "^3.6.7",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0",
     "webpack-dev-server": "^4.11.0",

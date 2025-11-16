@@ -11,6 +11,10 @@ const CONFIG = {
     DEFAULT_COORDINATE: [-6.2, 106.816666], // Jakarta
     DEFAULT_ZOOM: 10,
   },
+  PUSH_NOTIFICATION: {
+    PUBLIC_VAPID_KEY: 'BEWn5cwqHObW8NJmgfjzHr3AFUJ0n189r5GJlUzvilhp-egMGgACY6t8Ck5ZsdbL60YBIsniJPpgqPEu73_fGik', // Ganti dengan key Anda
+    SERVER_URL: 'http://localhost:3000/subscribe', // URL server push Anda
+  },
 };
 
 export default CONFIG;
