@@ -66,9 +66,23 @@ module.exports = {
 
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'src/public', to: 'public' },
-        { from: 'src/sw.js', to: 'sw.js' },
-        { from: 'src/sw.js', to: '.' },
+        {
+      from: path.resolve(__dirname, 'src/public/'),
+      to: path.resolve(__dirname, 'dist/public/'),
+    },
+    {
+      from: path.resolve(__dirname, 'src/sw.js'),
+      to: path.resolve(__dirname, 'dist/sw.js'),
+    },
+    {
+      from: path.resolve(__dirname, 'src/public/manifest.json'),
+      to: path.resolve(__dirname, 'dist/manifest.json'),
+    },
+    {
+      from: path.resolve(__dirname, 'src/public/offline.html'),
+      to: path.resolve(__dirname, 'dist/offline.html'),
+    },
+    
       ],
     }),
   ],

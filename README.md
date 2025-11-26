@@ -44,6 +44,9 @@ Proyek ini adalah setup dasar untuk aplikasi web yang menggunakan webpack untuk 
   ```
   Script ini menggunakan [`http-server`](https://www.npmjs.com/package/http-server) untuk menyajikan konten dari direktori `dist`.
 
+## Token
+- Public Key : BEWn5cwqHObW8NJmgfjzHr3AFUJ0n189r5GJlUzvilhp-egMGgACY6t8Ck5ZsdbL60YBIsniJPpgqPEu73_fGik
+- Private Key: tQ0HrZaV6xTCVln4t0wlC3F1pFS_I-6xYRe0ryoA4Ng                                                                                                         
 ## Project Structure
 
 Proyek starter ini dirancang agar kode tetap modular dan terorganisir.

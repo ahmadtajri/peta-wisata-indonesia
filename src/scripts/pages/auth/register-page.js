@@ -4,7 +4,7 @@ const RegisterPage = {
   async render() {
     return `
       <section class="auth-page">
-        <h1>Register</h1>
+        <h2>Register</h2>
         <h2 class="sr-only">Form Registrasi Pengguna Baru</h2>
         <form id="registerForm" class="auth-form">
           <div class="form-group">
@@ -19,7 +19,7 @@ const RegisterPage = {
             <label for="password">Password</label>
             <input id="password" type="password" required aria-required="true" />
           </div>
-          <button type="submit">Register</button>
+          <button type="submit" class="btn-primary">Register</button>
           <p>Sudah punya akun? <a href="#/login">Login</a></p>
         </form>
         <div id="error-message" class="error-message" role="alert"></div>

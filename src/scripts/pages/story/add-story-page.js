@@ -6,7 +6,7 @@ const AddStoryPage = {
   async render() {
     return `
       <section class="add-story-page">
-        <h1>Tambah Cerita Baru</h1>
+        <h2>Tambah Cerita Baru</h2>
         <h2 class="sr-only">Form Tambah Cerita Wisata</h2>
         <form id="storyForm" class="story-form" enctype="multipart/form-data">
           <div class="form-group">
@@ -45,6 +45,7 @@ const AddStoryPage = {
     const form = document.querySelector('#storyForm');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const description = document.querySelector('#description').value.trim();
       const photoInput = document.querySelector('#photo').files[0];
 
@@ -54,8 +55,17 @@ const AddStoryPage = {
       }
 
       try {
-        const response = await API.addStory({ description, photo: photoInput, lat: selectedLat, lon: selectedLng });
+        const response = await API.addStory({
+          description,
+          photo: photoInput,
+          lat: selectedLat,
+          lon: selectedLng
+        });
+
         if (!response.error) {
+          // ✅ TRIGGER NOTIFICATION
+          await this.showSuccessNotification(description);
+
           alert('Cerita berhasil ditambahkan!');
           window.location.hash = '/';
         } else {
@@ -66,6 +76,64 @@ const AddStoryPage = {
         console.error(error);
       }
     });
+  },
+
+  // ========================================
+  // Show Success Notification
+  // ========================================
+  async showSuccessNotification(description) {
+    try {
+      // Check if browser supports notifications
+      if (!('Notification' in window)) {
+        console.warn('Browser tidak support notifikasi');
+        return;
+      }
+
+      // Check permission
+      let permission = Notification.permission;
+
+      if (permission === 'default') {
+        permission = await Notification.requestPermission();
+      }
+
+      if (permission !== 'granted') {
+        console.warn('Notifikasi tidak diizinkan');
+        return;
+      }
+
+      // Get service worker registration
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+
+        // Show notification via service worker
+        await registration.showNotification('Cerita Berhasil Ditambahkan! 🎉', {
+          body: description.substring(0, 100) + '...',
+          icon: '/public/icons/icon-192x192.png',
+          badge: '/public/icons/icon-192x192.png',
+          tag: 'story-added',
+          requireInteraction: false,
+          vibrate: [200, 100, 200],
+          data: {
+            url: '/#/',
+            timestamp: Date.now(),
+          },
+          actions: [
+            {
+              action: 'view',
+              title: '👁️ Lihat Cerita',
+            },
+            {
+              action: 'close',
+              title: '❌ Tutup',
+            },
+          ],
+        });
+
+        console.log('✅ Notifikasi ditampilkan');
+      }
+    } catch (error) {
+      console.error('Error showing notification:', error);
+    }
   },
 };
 

@@ -5,7 +5,7 @@ const LoginPage = {
   async render() {
     return `
       <section class="auth-page">
-        <h1>Login</h1>
+        <h2>Login</h2>
         <h2 class="sr-only">Form Login Pengguna</h2>
         <form id="loginForm" class="auth-form">
           <div class="form-group">
@@ -16,7 +16,7 @@ const LoginPage = {
             <label for="password">Password</label>
             <input id="password" type="password" required aria-required="true" />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" class="btn-primary">Login</button>
           <p>Belum punya akun? <a href="#/register">Register</a></p>
         </form>
         <div id="error-message" class="error-message" role="alert"></div>

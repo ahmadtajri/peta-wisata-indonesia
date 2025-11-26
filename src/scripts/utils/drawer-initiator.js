@@ -16,22 +16,18 @@ const DrawerInitiator = {
       console.log('Hamburger clicked, drawer toggled');
     });
 
-    // JANGAN tutup drawer saat klik content di desktop
-    // Hanya untuk mobile yang perlu auto-close
-    
-    // Tutup drawer saat klik link navigasi (PENTING!)
+    // Tutup drawer saat klik link navigasi
     const navLinks = drawer.querySelectorAll('a');
     console.log('Found nav links:', navLinks.length);
-    
+
     navLinks.forEach((link, index) => {
       link.addEventListener('click', (event) => {
-        // JANGAN preventDefault! Biarkan navigasi berjalan normal
         console.log(`Nav link ${index} clicked:`, link.href);
-        
+
         // Tutup drawer setelah klik
         setTimeout(() => {
           this._closeDrawer(drawer);
-        }, 100); // Delay sedikit agar hash berubah dulu
+        }, 100);
       });
     });
 
@@ -47,13 +43,15 @@ const DrawerInitiator = {
 
   _toggleDrawer(drawer) {
     const overlay = document.getElementById('drawer-overlay');
-    const isActive = drawer.classList.contains('active');
-    
-    if (isActive) {
+    const button = document.getElementById('hamburgerButton');
+    const isOpen = drawer.classList.contains('open');
+
+    if (isOpen) {
       this._closeDrawer(drawer);
     } else {
-      drawer.classList.add('active');
-      overlay?.classList.add('active');
+      drawer.classList.add('open');
+      overlay?.classList.add('open');
+      button?.classList.add('active');
       document.body.style.overflow = 'hidden';
       console.log('Drawer opened');
     }
@@ -61,8 +59,10 @@ const DrawerInitiator = {
 
   _closeDrawer(drawer) {
     const overlay = document.getElementById('drawer-overlay');
-    drawer.classList.remove('active');
-    overlay?.classList.remove('active');
+    const button = document.getElementById('hamburgerButton');
+    drawer.classList.remove('open');
+    overlay?.classList.remove('open');
+    button?.classList.remove('active');
     document.body.style.overflow = '';
     console.log('Drawer closed');
   },
@@ -77,7 +77,7 @@ const DrawerInitiator = {
     const overlay = document.createElement('div');
     overlay.id = 'drawer-overlay';
     overlay.className = 'drawer-overlay';
-    
+
     // Tambahkan ke body
     document.body.appendChild(overlay);
 
@@ -89,8 +89,6 @@ const DrawerInitiator = {
 
     console.log('Overlay created');
   },
-
-  
 };
 
 export default DrawerInitiator;

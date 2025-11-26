@@ -1,5 +1,7 @@
 import CONFIG from '../config.js';
 
+const API_BASE_URL = 'https://story-api.dicoding.dev/v1';
+
 const PushNotification = {
   // ========================================
   // Check Browser Support
@@ -62,39 +64,41 @@ const PushNotification = {
     }
 
     try {
-      // 1. Dapatkan service worker registration
+      // 1. Get service worker registration
       const registration = await navigator.serviceWorker.ready;
       console.log('Service Worker ready for push subscription');
 
-      // 2. Cek apakah sudah subscribe
+      // 2. Check if already subscribed
       let subscription = await registration.pushManager.getSubscription();
 
       if (subscription) {
         console.log('Already subscribed to push notifications');
+        // Send existing subscription to Dicoding API
+        await this.sendSubscriptionToDicodingAPI(subscription);
         return subscription;
       }
 
-      // 3. Request permission jika belum
+      // 3. Request permission if needed
       const hasPermission = await this.requestPermission();
       if (!hasPermission) {
         throw new Error('Permission tidak diberikan');
       }
 
-      // 4. Subscribe dengan VAPID key
+      // 4. Subscribe with VAPID key
       const vapidPublicKey = CONFIG.PUSH_NOTIFICATION.PUBLIC_VAPID_KEY;
       const convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
 
       subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true, // Wajib: notifikasi harus visible
+        userVisibleOnly: true,
         applicationServerKey: convertedVapidKey,
       });
 
       console.log('✅ Push subscription created:', subscription);
 
-      // 5. Kirim subscription ke server
-      await this.sendSubscriptionToServer(subscription);
+      // 5. Send subscription to Dicoding API
+      await this.sendSubscriptionToDicodingAPI(subscription);
 
-      // 6. Simpan status di localStorage
+      // 6. Save status
       localStorage.setItem('push_subscription_enabled', 'true');
 
       return subscription;
@@ -117,14 +121,13 @@ const PushNotification = {
         return;
       }
 
-      // Unsubscribe
+      // Delete from Dicoding API first
+      await this.deleteSubscriptionFromDicodingAPI(subscription);
+
+      // Then unsubscribe locally
       await subscription.unsubscribe();
       console.log('✅ Unsubscribed from push notifications');
 
-      // Hapus dari server
-      await this.removeSubscriptionFromServer(subscription);
-
-      // Update localStorage
       localStorage.setItem('push_subscription_enabled', 'false');
     } catch (error) {
       console.error('Error unsubscribing from push:', error);
@@ -147,60 +150,86 @@ const PushNotification = {
   },
 
   // ========================================
-  // Send Subscription to Server
+  // Send Subscription to Dicoding API
   // ========================================
-  async sendSubscriptionToServer(subscription) {
+  async sendSubscriptionToDicodingAPI(subscription) {
     try {
-      const serverUrl = CONFIG.PUSH_NOTIFICATION.SERVER_URL;
+      const user = JSON.parse(localStorage.getItem('dicoding_story_user') || '{}');
+      
+      if (!user || !user.token) {
+        console.warn('⚠️ User belum login, skip send subscription to API');
+        return;
+      }
 
-      const response = await fetch(serverUrl, {
+      const endpoint = `${API_BASE_URL}/stories/push/subscribe`;
+
+      console.log('📤 Sending subscription to Dicoding API:', endpoint);
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`,
         },
         body: JSON.stringify({
-          subscription,
-          user: JSON.parse(localStorage.getItem('dicoding_story_user') || '{}'),
+          subscription: subscription.toJSON(),
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to subscribe');
+      }
+
+      console.log('✅ Subscription sent to Dicoding API:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending subscription to Dicoding API:', error);
+      // Don't throw - subscription masih valid locally
+    }
+  },
+
+  // ========================================
+  // Delete Subscription from Dicoding API
+  // ========================================
+  async deleteSubscriptionFromDicodingAPI(subscription) {
+    try {
+      const user = JSON.parse(localStorage.getItem('dicoding_story_user') || '{}');
+      
+      if (!user || !user.token) {
+        console.warn('⚠️ User belum login, skip delete subscription from API');
+        return;
+      }
+
+      const endpoint = `${API_BASE_URL}/stories/push/unsubscribe`;
+
+      console.log('📤 Deleting subscription from Dicoding API:', endpoint);
+
+      const response = await fetch(endpoint, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          subscription: subscription.toJSON(),
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send subscription to server');
+        const result = await response.json();
+        throw new Error(result.message || 'Failed to unsubscribe');
       }
 
-      const result = await response.json();
-      console.log('Subscription sent to server:', result);
-      return result;
+      console.log('✅ Subscription deleted from Dicoding API');
     } catch (error) {
-      console.error('Error sending subscription to server:', error);
-      // Jangan throw error di sini agar subscription tetap tersimpan lokal
-      // throw error;
+      console.error('❌ Error deleting subscription from Dicoding API:', error);
     }
   },
 
   // ========================================
-  // Remove Subscription from Server
-  // ========================================
-  async removeSubscriptionFromServer(subscription) {
-    try {
-      const serverUrl = CONFIG.PUSH_NOTIFICATION.SERVER_URL;
-
-      await fetch(serverUrl, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ subscription }),
-      });
-
-      console.log('Subscription removed from server');
-    } catch (error) {
-      console.error('Error removing subscription from server:', error);
-    }
-  },
-
-  // ========================================
-  // Test Notification (for debugging)
+  // Test Notification (Local Only)
   // ========================================
   async testNotification() {
     if (Notification.permission !== 'granted') {
@@ -210,10 +239,10 @@ const PushNotification = {
     if (Notification.permission === 'granted') {
       const registration = await navigator.serviceWorker.ready;
       
-      registration.showNotification('Test Notification', {
+      registration.showNotification('Test Notification 🧪', {
         body: 'Ini adalah test notification dari Peta Wisata Indonesia',
-        icon: '/images/icon-192.png',
-        badge: '/images/icon-192.png',
+        icon: '/public/icons/icon-192x192.png',
+        badge: '/public/icons/icon-192x192.png',
         tag: 'test-notification',
         actions: [
           { action: 'view', title: 'Lihat' },

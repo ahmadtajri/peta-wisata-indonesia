@@ -1,24 +1,16 @@
-// Import global stylesheet agar Webpack memproses CSS
 import '../styles/styles.css';
-
-// Import App utama dan service worker register
 import App from './pages/app.js';
 import swRegister from './utils/sw-register.js';
 import NotificationHelper from './utils/notification-helper.js';
+import InstallPrompt from './utils/install-prompt.js';
 
-// Debugging awal
 console.log('App initialized...');
 
-// Instance global app
 let app;
 
-// ========================================
-// Update Navigation Status
-// ========================================
 const updateNav = () => {
   const user = JSON.parse(localStorage.getItem('dicoding_story_user') || 'null');
   const nav = document.querySelector('#nav-links');
-  
   if (!nav) return;
   
   if (user) {
@@ -30,21 +22,15 @@ const updateNav = () => {
   }
 };
 
-// ========================================
-// Initialize App
-// ========================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Update navigation status
   updateNav();
   
-  // Ambil elemen utama untuk inisialisasi App
   app = new App({
     button: document.querySelector('#hamburgerButton'),
     drawer: document.querySelector('#navigationDrawer'),
     content: document.querySelector('#main-content'),
   });
 
-  // Logout handler
   const logoutBtn = document.querySelector('#logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
@@ -57,27 +43,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Render ulang setiap kali hash berubah
   window.addEventListener('hashchange', async () => {
     console.log('Route changed:', window.location.hash);
     await app.renderPage();
-    updateNav(); // Update nav setiap kali route berubah
+    updateNav();
   });
 
-  // Render halaman awal setelah halaman selesai dimuat
   window.addEventListener('load', async () => {
-    console.log('Window loaded, rendering initial page...');
+    console.log('Window loaded');
     await app.renderPage();
     
-    // Register Service Worker
+    // 🔥 Register Service Worker
     await swRegister();
     
-    // 🔔 Initialize Push Notification UI (OPTIONAL)
+    // 🔔 Initialize Push Notification (optional)
     try {
       await NotificationHelper.init();
-      console.log('✅ Notification helper initialized');
     } catch (error) {
-      console.warn('⚠️ Notification helper failed to initialize:', error);
+      console.warn('Notification init failed:', error);
     }
+    
+    // 📱 Initialize Install Prompt
+    InstallPrompt.init();
   });
 });

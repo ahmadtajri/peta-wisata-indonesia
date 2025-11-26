@@ -18,7 +18,7 @@ const DetailStoryPage = {
   async afterRender() {
     const url = UrlParser.parseActiveUrlWithoutCombiner();
     const rawHash = window.location.hash;
-    
+
     console.log('[DetailStoryPage] Raw Hash:', rawHash);
     console.log('[DetailStoryPage] Parsed URL:', url);
     console.log('[DetailStoryPage] Resource:', url.resource);
@@ -27,7 +27,7 @@ const DetailStoryPage = {
     // Ambil ID langsung dari hash sebagai fallback
     const hashParts = rawHash.replace('#/', '').split('/');
     const idFromHash = hashParts[1]; // story/ID -> ambil index 1
-    
+
     console.log('[DetailStoryPage] Hash parts:', hashParts);
     console.log('[DetailStoryPage] ID from hash:', idFromHash);
 
@@ -38,10 +38,10 @@ const DetailStoryPage = {
 
     if (!id) {
       document.querySelector('#story-detail').innerHTML = `
-        <h1>Detail Cerita</h1>
-        <p class="text-red-600">❌ ID cerita tidak ditemukan di URL.</p>
-        <p class="text-gray-600">URL: ${rawHash}</p>
-        <a href="#/" class="inline-block mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+        <h2>Detail Cerita</h2>
+        <p class="error-message">❌ ID cerita tidak ditemukan di URL.</p>
+        <p class="text-muted">URL: ${rawHash}</p>
+        <a href="#/" class="btn-primary" style="display: inline-block; width: auto; margin-top: 1rem; text-decoration: none;">
           ← Kembali ke Beranda
         </a>
       `;
@@ -59,17 +59,17 @@ const DetailStoryPage = {
       const { name, description, photoUrl, lat, lon } = story;
 
       document.querySelector('#story-detail').innerHTML = `
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">${name}</h1>
-        <div class="story-card">
+        <h2>${name}</h2>
+        <div class="story-card detail-content">
           <img src="${photoUrl}" alt="${name}" class="story-image"/>
           <div class="story-info">
-            <h2 class="text-xl font-semibold mb-3">Deskripsi</h2>
-            <p class="mb-4">${description}</p>
+            <h3>Deskripsi</h3>
+            <p>${description}</p>
             ${lat && lon ? `
-              <h2 class="text-xl font-semibold mb-3">Lokasi</h2>
+              <h3>Lokasi</h3>
               <div id="map-detail" class="map-container"></div>
             ` : ''}
-            <a href="#/" class="inline-block mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+            <a href="#/" class="btn-primary" style="display: inline-block; width: auto; margin-top: 1.5rem; text-decoration: none;">
               ← Kembali ke Beranda
             </a>
           </div>
@@ -87,13 +87,13 @@ const DetailStoryPage = {
     } catch (error) {
       console.error('[DetailStoryPage] ❌ Gagal memuat detail:', error);
       document.querySelector('#story-detail').innerHTML = `
-        <h1>Detail Cerita</h1>
+        <h2>Detail Cerita</h2>
         <div class="text-center py-10">
-          <p class="text-red-600 mb-4">❌ Gagal memuat detail cerita.</p>
-          <p class="text-gray-600 mb-2"><strong>Error:</strong> ${error.message}</p>
-          <p class="text-gray-600 mb-2"><strong>Story ID:</strong> ${id}</p>
-          <p class="text-gray-600 mb-4"><strong>URL:</strong> ${rawHash}</p>
-          <a href="#/" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+          <p class="error-message">❌ Gagal memuat detail cerita.</p>
+          <p class="text-muted"><strong>Error:</strong> ${error.message}</p>
+          <p class="text-muted"><strong>Story ID:</strong> ${id}</p>
+          <p class="text-muted"><strong>URL:</strong> ${rawHash}</p>
+          <a href="#/" class="btn-primary" style="display: inline-block; width: auto; margin-top: 1rem; text-decoration: none;">
             ← Kembali ke Beranda
           </a>
         </div>

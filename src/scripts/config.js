@@ -12,9 +12,9 @@ const CONFIG = {
     DEFAULT_ZOOM: 10,
   },
   PUSH_NOTIFICATION: {
-    PUBLIC_VAPID_KEY: 'BEWn5cwqHObW8NJmgfjzHr3AFUJ0n189r5GJlUzvilhp-egMGgACY6t8Ck5ZsdbL60YBIsniJPpgqPEu73_fGik', // Ganti dengan key Anda
+    PUBLIC_VAPID_KEY: 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk', // Ganti dengan key Anda
     SERVER_URL: 'http://localhost:3000/subscribe', // URL server push Anda
   },
 };
 
-export default CONFIG;
+export default CONFIG; 

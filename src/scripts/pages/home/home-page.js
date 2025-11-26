@@ -4,24 +4,22 @@ import CONFIG from '../../config.js';
 const HomePage = {
   async render() {
     return `
-      <section class="home-page px-6 md:px-12 py-10 bg-gradient-to-b from-blue-50 to-white min-h-screen">
-        <div class="text-center mb-10">
-          <h1 class="text-4xl md:text-5xl font-bold text-blue-700 mb-2">🌏 Peta Lokasi Wisata Indonesia</h1>
-          <p class="text-gray-600 text-lg max-w-2xl mx-auto">
-            Temukan dan jelajahi berbagai destinasi wisata menarik di seluruh Indonesia, lengkap dengan lokasi peta dan cerita dari para wisatawan.
-          </p>
-        </div>
+      <section class="home-page">
+        <h2>🌏 Peta Lokasi Wisata Indonesia</h2>
+        <p>
+          Temukan dan jelajahi berbagai destinasi wisata menarik di seluruh Indonesia, lengkap dengan lokasi peta dan cerita dari para wisatawan.
+        </p>
 
-        <div id="map-home" class="map-container h-80 md:h-[500px] rounded-2xl shadow-lg overflow-hidden mb-10"></div>
+        <div id="map-home" class="map-container"></div>
 
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold text-gray-800">🗺️ Daftar Lokasi Wisata</h2>
-          <a href="#/add-story" class="text-blue-600 hover:text-blue-800 transition font-medium">
-            + Tambah Cerita Baru
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <h3 style="font-size: 1.75rem; color: var(--text-main);">🗺️ Daftar Lokasi Wisata</h3>
+          <a href="#/add-story" class="btn-primary" style="width: auto; padding: 0.75rem 1.5rem; text-decoration: none;">
+            + Tambah Cerita
           </a>
         </div>
 
-        <div id="story-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 story-list"></div>
+        <div id="story-list" class="story-list"></div>
       </section>
     `;
   },
@@ -48,7 +46,7 @@ const HomePage = {
 
       if (!stories || stories.length === 0) {
         storyList.innerHTML = `
-          <div class="col-span-full text-center text-gray-500 text-lg py-10">
+          <div class="error-message">
             Tidak ada cerita ditemukan.
           </div>
         `;
@@ -58,30 +56,18 @@ const HomePage = {
       // Render setiap story
       stories.forEach((story) => {
         const storyElement = document.createElement('div');
-        storyElement.classList.add(
-          'story-card',
-          'bg-white',
-          'rounded-2xl',
-          'shadow-md',
-          'hover:shadow-xl',
-          'transition',
-          'overflow-hidden',
-          'flex',
-          'flex-col'
-        );
+        storyElement.classList.add('story-card');
 
         // 🔥 PERBAIKAN: Cek format ID dari API
         const storyId = story.id;
         console.log('Story ID from API:', storyId);
 
         storyElement.innerHTML = `
-          <img src="${story.photoUrl}" alt="${story.name}" class="w-full h-52 object-cover" />
-          <div class="p-5 flex flex-col flex-grow">
-            <h3 class="text-lg font-semibold text-gray-800 mb-1">${story.name}</h3>
-            <p class="text-gray-600 text-sm flex-grow">${story.description.substring(0, 100)}...</p>
-            <a href="#/story/${storyId}" 
-               class="mt-3 inline-block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-               data-story-id="${storyId}">
+          <img src="${story.photoUrl}" alt="${story.name}" loading="lazy" />
+          <div class="story-info">
+            <h3>${story.name}</h3>
+            <p>${story.description.substring(0, 100)}...</p>
+            <a href="#/story/${storyId}" data-story-id="${storyId}">
                Lihat Detail
             </a>
           </div>
@@ -94,11 +80,11 @@ const HomePage = {
           L.marker([story.lat, story.lon])
             .addTo(map)
             .bindPopup(`
-              <div class="text-center">
-                <img src="${story.photoUrl}" alt="${story.name}" width="100" class="rounded-lg mb-1"/>
-                <h4 class="font-semibold">${story.name}</h4>
-                <p class="text-sm text-gray-700">${story.description.substring(0, 80)}...</p>
-                <a href="#/story/${storyId}" class="text-blue-600 underline text-sm">Lihat Detail</a>
+              <div class="leaflet-popup-content">
+                <img src="${story.photoUrl}" alt="${story.name}" />
+                <h4>${story.name}</h4>
+                <p>${story.description.substring(0, 80)}...</p>
+                <a href="#/story/${storyId}">Lihat Detail</a>
               </div>
             `);
         }

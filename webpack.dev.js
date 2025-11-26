@@ -1,32 +1,34 @@
-/* eslint-disable no-undef */
-const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   mode: 'development',
-
-  // Source map agar debugging lebih mudah
-  devtool: 'eval-source-map',
-
+  devtool: 'inline-source-map',
   devServer: {
-    static: {
-      directory: path.resolve(__dirname, 'dist'),
+    static: './dist',
+    port: 9000,
+    hot: true,
+    open: true,
+    
+    // ✅ Disable cache untuk development
+    devMiddleware: {
+      writeToDisk: false,
     },
-    port: 9000,               // alamat: http://localhost:9000
-    open: true,               // otomatis buka browser
-    compress: true,           // aktifkan gzip compression
-    historyApiFallback: true, // agar hash-based routing atau SPA tidak error 404
-    hot: true,                // hot reload untuk style dan script
-    client: {
-      overlay: {
-        warnings: false,
-        errors: true,
+    
+    // ✅ Force reload on change
+    watchFiles: {
+      paths: ['src/**/*'],
+      options: {
+        usePolling: true,
       },
     },
-  },
-
-  optimization: {
-    runtimeChunk: 'single', // agar cache JS lebih efisien
+    
+    // ✅ Headers untuk disable cache
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
+    },
   },
 });
