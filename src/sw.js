@@ -1,9 +1,7 @@
-/* eslint-disable no-restricted-globals */
-
 // ========================================
 // CACHE CONFIGURATION
 // ========================================
-const CACHE_VERSION = 'v2.0.0';
+const CACHE_VERSION = 'v2.0.2';
 const CACHE_PREFIX = 'peta-wisata';
 
 const CACHES = {
@@ -30,7 +28,7 @@ const API_CACHE_DURATION = 5 * 60 * 1000; // 5 menit
 // INSTALL EVENT - Cache Static Assets
 // ========================================
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] 📦 Installing...');
+  console.log('[Service Worker] 📦 Installing v2.0.2...');
 
   event.waitUntil(
     caches
@@ -62,7 +60,7 @@ self.addEventListener('install', (event) => {
 // ACTIVATE EVENT - Clean Old Caches
 // ========================================
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] 🚀 Activating...');
+  console.log('[Service Worker] 🚀 Activating v2.0.2...');
 
   event.waitUntil(
     caches
@@ -98,15 +96,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 🎯 Strategy 1: Cache First (Static Assets)
+  // 🎯 Strategy 1: Network First (Static Assets)
   if (isStaticAsset(url)) {
-    event.respondWith(cacheFirst(request, CACHES.STATIC));
+    event.respondWith(networkFirstWithCache(request, CACHES.STATIC));
     return;
   }
 
-  // 🎯 Strategy 2: Stale While Revalidate (API Data)
+  // 🎯 Strategy 2: Network First (API Data)
   if (isApiRequest(url)) {
-    event.respondWith(staleWhileRevalidate(request, CACHES.API));
+    event.respondWith(networkFirstWithCache(request, CACHES.API));
     return;
   }
 
@@ -127,7 +125,7 @@ self.addEventListener('fetch', (event) => {
 // Strategy 1: Cache First
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
-  
+
   if (cached) {
     console.log('[Service Worker] 📦 From cache:', request.url);
     return cached;
@@ -135,9 +133,11 @@ async function cacheFirst(request, cacheName) {
 
   try {
     const response = await fetch(request);
-    const cache = await caches.open(cacheName);
-    cache.put(request, response.clone());
-    console.log('[Service Worker] 🌐 From network (cached):', request.url);
+    if (request.method === 'GET') {
+      const cache = await caches.open(cacheName);
+      cache.put(request, response.clone());
+      console.log('[Service Worker] 🌐 From network (cached):', request.url);
+    }
     return response;
   } catch (error) {
     console.error('[Service Worker] ❌ Fetch failed:', error);
@@ -153,11 +153,13 @@ async function staleWhileRevalidate(request, cacheName) {
   const fetchPromise = fetch(request)
     .then((response) => {
       const cache = caches.open(cacheName);
-      
+
       // Update cache in background (revalidate)
       cache.then((c) => {
-        c.put(request, response.clone());
-        console.log('[Service Worker] 🔄 Cache updated:', request.url);
+        if (request.method === 'GET') {
+          c.put(request, response.clone());
+          console.log('[Service Worker] 🔄 Cache updated:', request.url);
+        }
       });
 
       return response;
@@ -177,25 +179,35 @@ async function staleWhileRevalidate(request, cacheName) {
 // Strategy 3: Network First with Cache Fallback
 async function networkFirstWithCache(request, cacheName) {
   try {
+    console.log('[Service Worker] 🌐 Fetching:', request.method, request.url);
     const response = await fetch(request);
-    
-    // Only cache successful responses
-    if (response && response.status === 200) {
+
+    // Only cache successful responses and GET requests
+    if (response && response.status === 200 && request.method === 'GET') {
       const cache = await caches.open(cacheName);
       cache.put(request, response.clone());
-      console.log('[Service Worker] 🌐 From network (cached):', request.url);
+      console.log('[Service Worker] 💾 Cached:', request.url);
     }
-    
+
     return response;
   } catch (error) {
-    console.log('[Service Worker] 📦 Network failed, trying cache:', request.url);
-    
+    console.log('[Service Worker] ❌ Network failed:', request.method, request.url);
+
+    // For non-GET requests (POST, PUT, DELETE), don't return fallback
+    // Let the error propagate to the application
+    if (request.method !== 'GET') {
+      console.log('[Service Worker] ⚠️ Non-GET request failed, throwing error');
+      throw error;
+    }
+
+    // For GET requests, try cache fallback
     const cached = await caches.match(request);
-    
+
     if (cached) {
+      console.log('[Service Worker] 📦 Returning cached response');
       return cached;
     }
-    
+
     return getOfflineFallback(request);
   }
 }
@@ -346,4 +358,4 @@ self.addEventListener('message', (event) => {
   }
 });
 
-console.log('[Service Worker] 🚀 Loaded');
+console.log('[Service Worker] 🚀 Loaded v2.0.2');

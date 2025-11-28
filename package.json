@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "dev": "webpack serve --config webpack.dev.js"
+    "dev": "webpack serve --config webpack.dev.js",
+    "serve-prod": "node serve-prod.js",
+    "build-serve": "npm run build && npm run serve-prod"
   },
   "dependencies": {
     "body-parser": "^2.2.0",

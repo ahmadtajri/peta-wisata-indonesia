@@ -50,7 +50,7 @@ class DicodingAPI {
       if (!user || !user.token) throw new Error('User belum login.');
 
       const response = await fetch(
-        `${CONFIG.BASE_URL}${CONFIG.API_ENDPOINT.ALL_STORIES}?location=1`,
+        `${CONFIG.BASE_URL}${CONFIG.API_ENDPOINT.ALL_STORIES}?t=${Date.now()}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -101,7 +101,7 @@ class DicodingAPI {
       console.log('[DEBUG] Token user:', user?.token);
       if (!user || !user.token) throw new Error('User belum login.');
 
-      const response = await fetch(`${CONFIG.BASE_URL}${CONFIG.API_ENDPOINT.DETAIL_STORY(id)}`, {
+      const response = await fetch(`${CONFIG.BASE_URL}${CONFIG.API_ENDPOINT.DETAIL_STORY(id)}?t=${Date.now()}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
 

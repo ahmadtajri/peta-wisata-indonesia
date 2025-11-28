@@ -21,17 +21,10 @@ const DetailStoryPage = {
 
     console.log('[DetailStoryPage] Raw Hash:', rawHash);
     console.log('[DetailStoryPage] Parsed URL:', url);
-    console.log('[DetailStoryPage] Resource:', url.resource);
-    console.log('[DetailStoryPage] ID from parser:', url.id);
 
     // Ambil ID langsung dari hash sebagai fallback
     const hashParts = rawHash.replace('#/', '').split('/');
     const idFromHash = hashParts[1]; // story/ID -> ambil index 1
-
-    console.log('[DetailStoryPage] Hash parts:', hashParts);
-    console.log('[DetailStoryPage] ID from hash:', idFromHash);
-
-    // Gunakan ID dari hash langsung, bukan dari parser
     const id = idFromHash || url.id;
 
     console.log('[DetailStoryPage] Final Story ID to fetch:', id);
@@ -56,13 +49,20 @@ const DetailStoryPage = {
         throw new Error('Cerita tidak ditemukan di server.');
       }
 
-      const { name, description, photoUrl, lat, lon } = story;
+      const { name, description, photoUrl, lat, lon, createdAt } = story;
 
       document.querySelector('#story-detail').innerHTML = `
         <h2>${name}</h2>
         <div class="story-card detail-content">
           <img src="${photoUrl}" alt="${name}" class="story-image"/>
           <div class="story-info">
+            <span class="story-date" style="font-size: 1rem; margin-bottom: 1.5rem;">
+              📅 ${new Date(createdAt).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })}
+            </span>
             <h3>Deskripsi</h3>
             <p>${description}</p>
             ${lat && lon ? `
