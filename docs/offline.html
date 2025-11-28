@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2563eb">
+  <title>Offline - Peta Wisata Indonesia</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .offline-container {
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .offline-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      color: #1e293b;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #64748b;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .status {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    .status.online {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #475569;
+      margin-left: 1rem;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .tips {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f1f5f9;
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .tips h3 {
+      color: #475569;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tips ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .tips li {
+      color: #64748b;
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      font-size: 0.95rem;
+    }
+
+    .tips li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    .loader {
+      display: none;
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #2563eb;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1>Anda Sedang Offline</h1>
+    <p>Koneksi internet tidak tersedia. Beberapa fitur mungkin tidak dapat diakses.</p>
+
+    <div class="status" id="status">
+      🔴 Tidak ada koneksi internet
+    </div>
+
+    <div class="loader" id="loader"></div>
+
+    <div>
+      <button class="btn" onclick="tryReconnect()">🔄 Coba Lagi</button>
+      <a href="/" class="btn btn-secondary">🏠 Kembali</a>
+    </div>
+
+    <div class="tips">
+      <h3>💡 Tips Menggunakan Offline</h3>
+      <ul>
+        <li>Data yang sudah pernah dibuka masih bisa dilihat</li>
+        <li>Cerita wisata yang sudah di-cache akan tetap muncul</li>
+        <li>Peta offline mungkin terbatas</li>
+        <li>Login dan tambah cerita butuh koneksi internet</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Check online status
+    function updateOnlineStatus() {
+      const status = document.getElementById('status');
+      
+      if (navigator.onLine) {
+        status.className = 'status online';
+        status.innerHTML = '🟢 Koneksi tersedia! Memuat ulang...';
+        
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      } else {
+        status.className = 'status';
+        status.innerHTML = '🔴 Tidak ada koneksi internet';
+      }
+    }
+
+    // Try reconnect
+    function tryReconnect() {
+      const loader = document.getElementById('loader');
+      const status = document.getElementById('status');
+      
+      loader.classList.add('show');
+      status.innerHTML = '🔄 Memeriksa koneksi...';
+      
+      // Simulate checking
+      setTimeout(() => {
+        loader.classList.remove('show');
+        updateOnlineStatus();
+      }, 2000);
+    }
+
+    // Listen for online/offline events
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // Check on load
+    updateOnlineStatus();
+
+    // Auto retry every 30 seconds
+    setInterval(() => {
+      if (!navigator.onLine) {
+        console.log('Still offline, checking again...');
+      } else {
+        updateOnlineStatus();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
