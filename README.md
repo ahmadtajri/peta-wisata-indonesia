@@ -1,71 +1,111 @@
-# App Starter Project with Webpack
+# 🗺️ Peta Wisata Indonesia
 
-Proyek ini adalah setup dasar untuk aplikasi web yang menggunakan webpack untuk proses bundling, Babel untuk transpile JavaScript, serta mendukung proses build dan serving aplikasi.
+Aplikasi web Progressive Web App (PWA) yang menampilkan cerita dan lokasi wisata di Indonesia. Aplikasi ini memungkinkan pengguna untuk melihat, menambahkan, dan menyimpan destinasi wisata favorit mereka, serta melihat lokasinya secara interaktif di peta.
 
-## Table of Contents
+## ✨ Fitur Utama
 
-- [Getting Started](#getting-started)
-- [Scripts](#scripts)
-- [Project Structure](#project-structure)
+- **Otentikasi Pengguna**: Fitur Login dan Register menggunakan Dicoding Story API.
+- **Daftar Cerita Wisata**: Menampilkan daftar cerita wisata dari berbagai pengguna.
+- **Peta Interaktif**: Integrasi dengan **Leaflet.js** untuk menampilkan lokasi wisata pada peta.
+- **Tambah Cerita**: Pengguna dapat mengunggah cerita baru beserta foto dan lokasi.
+- **Favorit (Offline)**: Menyimpan cerita ke daftar favorit yang dapat diakses secara offline (menggunakan **IndexedDB**).
+- **PWA Support**:
+  - **Offline Capability**: Aplikasi tetap bisa dibuka saat tidak ada internet (menggunakan Service Worker).
+  - **Installable**: Dapat diinstal ke homescreen perangkat (Manifest).
+- **Push Notification**: Mendukung notifikasi web (Subscribe/Unsubscribe).
+- **Responsive Design**: Tampilan yang menyesuaikan berbagai ukuran layar (Mobile First).
 
-## Getting Started
+## 🛠️ Teknologi yang Digunakan
 
-### Prerequisites
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript (ES6+)
+- **Build Tool**: Webpack 5
+- **Maps**: Leaflet.js & OpenStreetMap
+- **PWA**: Service Worker, Web App Manifest, Cache API, IndexedDB
+- **Server (Production)**: Node.js & Express
+- **API**: Dicoding Story API
 
-- [Node.js](https://nodejs.org/) (disarankan versi 12 atau lebih tinggi)
-- [npm](https://www.npmjs.com/) (Node package manager)
+## 🚀 Cara Menjalankan Project
 
-### Installation
+### Prasyarat
 
-1. Download starter project [di sini](https://raw.githubusercontent.com/dicodingacademy/a219-web-intermediate-labs/099-shared-files/starter-project-with-webpack.zip).
-2. Lakukan unzip file.
-3. Pasang seluruh dependencies dengan perintah berikut.
-   ```shell
+Pastikan Anda telah menginstal:
+- [Node.js](https://nodejs.org/) (v14 atau lebih baru)
+- [npm](https://www.npmjs.com/)
+
+### Instalasi
+
+1. **Clone atau Download** repository ini.
+2. Buka terminal di folder project.
+3. Install dependencies:
+   ```bash
    npm install
    ```
+   *Jika ada error terkait `core-js`, jalankan: `npm install --save core-js@3`*
 
-## Scripts
+### Mode Development
 
-- Build for Production:
-  ```shell
-  npm run build
-  ```
-  Script ini menjalankan webpack dalam mode production menggunakan konfigurasi `webpack.prod.js` dan menghasilkan sejumlah file build ke direktori `dist`.
+Untuk menjalankan aplikasi dalam mode pengembangan (dengan Hot Module Replacement):
 
-- Start Development Server:
-  ```shell
-  npm run start-dev
-  ```
-  Script ini menjalankan server pengembangan webpack dengan fitur live reload dan mode development sesuai konfigurasi di`webpack.dev.js`.
+```bash
+npm start
+```
+Aplikasi akan berjalan di `http://localhost:9000`.
 
-- Serve:
-  ```shell
-  npm run serve
-  ```
-  Script ini menggunakan [`http-server`](https://www.npmjs.com/package/http-server) untuk menyajikan konten dari direktori `dist`.
+### Mode Production
 
-## Token
-- Public Key : BEWn5cwqHObW8NJmgfjzHr3AFUJ0n189r5GJlUzvilhp-egMGgACY6t8Ck5ZsdbL60YBIsniJPpgqPEu73_fGik
-- Private Key: tQ0HrZaV6xTCVln4t0wlC3F1pFS_I-6xYRe0ryoA4Ng                                                                                                         
-## Project Structure
+Untuk membuild aplikasi dan menjalankannya dalam mode produksi (seperti saat dideploy):
 
-Proyek starter ini dirancang agar kode tetap modular dan terorganisir.
+1. **Build Project**:
+   ```bash
+   npm run build
+   ```
+   Perintah ini akan menghasilkan folder `dist/` yang berisi file-file yang sudah dioptimasi.
+
+2. **Jalankan Server Production**:
+   ```bash
+   npm run serve-prod
+   ```
+   Aplikasi akan berjalan di `http://localhost:8080`.
+
+3. **Build & Serve Sekaligus**:
+   ```bash
+   npm run build-serve
+   ```
+
+## 📂 Struktur Project
 
 ```text
-starter-project/
-├── dist/                   # Compiled files for production
-├── src/                    # Source project files
-│   ├── public/             # Public files
-│   ├── scripts/            # Source JavaScript files
-│   │   └── index.js        # Main JavaScript entry file
-│   ├── styles/             # Source CSS files
-│   │   └── styles.css      # Main CSS file
-│   └── index.html/         # Main HTML file
-├── package.json            # Project metadata and dependencies
-├── package-lock.json       # Project metadata and dependencies
-├── README.md               # Project documentation
-├── STUDENT.txt             # Student information
-├── webpack.common.js       # Webpack common configuration
-├── webpack.dev.js          # Webpack development configuration
-└── webpack.prod.js         # Webpack production configuration
+peta-wisata-indonesia/
+├── dist/                   # File hasil build (Production)
+├── src/                    # Source code
+│   ├── public/             # Aset statis (gambar, icon, manifest)
+│   ├── scripts/            # Kode JavaScript
+│   │   ├── components/     # Web Components (jika ada)
+│   │   ├── data/           # API & Database logic
+│   │   ├── pages/          # Logika per halaman
+│   │   ├── routes/         # Routing logic
+│   │   ├── utils/          # Utility functions (SW register, notifikasi, dll)
+│   │   ├── globals/        # Konfigurasi global
+│   │   └── index.js        # Entry point
+│   ├── styles/             # File CSS
+│   ├── index.html          # Template HTML utama
+│   └── sw.js               # Service Worker configuration
+├── webpack.common.js       # Konfigurasi Webpack umum
+├── webpack.dev.js          # Konfigurasi Webpack development
+├── webpack.prod.js         # Konfigurasi Webpack production
+├── server.js               # Server untuk Push Notification
+├── serve-prod.js           # Server untuk Production Serve
+├── package.json            # Dependencies & Scripts
+└── README.md               # Dokumentasi
 ```
+
+## 🧪 Testing
+
+Lihat panduan lengkap testing di file [TESTING.md](./TESTING.md).
+
+## 🐛 Troubleshooting
+
+Jika mengalami masalah saat build atau menjalankan aplikasi, lihat panduan di [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) (jika tersedia) atau cek bagian Scripts di `package.json`.
+
+---
+**Dicoding Academy - Belajar Pengembangan Web Intermediate**
