@@ -1,8 +1,15 @@
 const DrawerInitiator = {
   init({ button, drawer, content }) {
+    console.log('🚀 DrawerInitiator.init called');
+    console.log('📍 Button:', button);
+    console.log('📍 Drawer:', drawer);
+    console.log('📍 Content:', content);
+
     // Validasi elemen
     if (!button || !drawer) {
-      console.error('DrawerInitiator: Button or drawer element not found');
+      console.error('❌ DrawerInitiator: Button or drawer element not found');
+      console.error('Button exists:', !!button);
+      console.error('Drawer exists:', !!drawer);
       return;
     }
 
@@ -11,65 +18,103 @@ const DrawerInitiator = {
 
     // Toggle drawer saat button diklik
     button.addEventListener('click', (event) => {
+      event.preventDefault();
       event.stopPropagation();
       this._toggleDrawer(drawer);
-      console.log('Hamburger clicked, drawer toggled');
+      console.log('🍔 Hamburger clicked, drawer toggled');
     });
 
-    // Tutup drawer saat klik link navigasi
-    const navLinks = drawer.querySelectorAll('a');
-    console.log('Found nav links:', navLinks.length);
+    // IMPORTANT: Use event delegation for dynamically added links
+    // Attach listener to drawer itself, not individual links
+    drawer.addEventListener('click', (event) => {
+      // Find closest anchor tag
+      const link = event.target.closest('a[data-link]');
 
-    navLinks.forEach((link, index) => {
-      link.addEventListener('click', (event) => {
-        console.log(`Nav link ${index} clicked:`, link.href);
+      if (link) {
+        console.log('🔗 Link clicked:', link.href);
+        console.log('🔗 Link text:', link.textContent);
 
-        // Tutup drawer setelah klik
-        setTimeout(() => {
+        // Special handling for logout
+        if (link.id === 'logout-btn') {
+          console.log('🚪 Logout button clicked');
+          // Let the main logout handler deal with it
           this._closeDrawer(drawer);
-        }, 100);
-      });
+          return;
+        }
+
+        // For navigation links, close drawer
+        // Don't preventDefault - let navigation happen
+        console.log('🎯 Closing drawer for navigation');
+        this._closeDrawer(drawer);
+      }
+    });
+
+    console.log('📱 Event delegation set up on drawer');
+
+    // Tutup drawer saat hash berubah (route change) - BACKUP
+    window.addEventListener('hashchange', () => {
+      console.log('🔄 Hash changed, closing drawer');
+      this._closeDrawer(drawer);
     });
 
     // Tutup drawer dengan tombol ESC
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
+        console.log('⌨️ ESC pressed, closing drawer');
         this._closeDrawer(drawer);
       }
     });
 
-    console.log('Drawer initialized ✅');
+    console.log('✅ Drawer initialized successfully');
   },
 
   _toggleDrawer(drawer) {
-    const overlay = document.getElementById('drawer-overlay');
-    const button = document.getElementById('hamburgerButton');
     const isOpen = drawer.classList.contains('open');
+    console.log('🔀 Toggle drawer, currently open:', isOpen);
 
     if (isOpen) {
       this._closeDrawer(drawer);
     } else {
-      drawer.classList.add('open');
-      overlay?.classList.add('open');
-      button?.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      console.log('Drawer opened');
+      this._openDrawer(drawer);
     }
+  },
+
+  _openDrawer(drawer) {
+    const overlay = document.getElementById('drawer-overlay');
+    const button = document.getElementById('hamburgerButton');
+
+    console.log('📂 Opening drawer...');
+    console.log('  - Overlay found:', !!overlay);
+    console.log('  - Button found:', !!button);
+
+    drawer.classList.add('open');
+    overlay?.classList.add('open');
+    button?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    console.log('✅ Drawer opened');
   },
 
   _closeDrawer(drawer) {
     const overlay = document.getElementById('drawer-overlay');
     const button = document.getElementById('hamburgerButton');
+
+    console.log('📁 Closing drawer...');
+
     drawer.classList.remove('open');
     overlay?.classList.remove('open');
     button?.classList.remove('active');
     document.body.style.overflow = '';
-    console.log('Drawer closed');
+
+    console.log('✅ Drawer closed');
   },
 
   _createOverlay(drawer) {
+    console.log('🎨 Creating overlay...');
+
     // Cek apakah overlay sudah ada
     if (document.getElementById('drawer-overlay')) {
+      console.log('ℹ️ Overlay already exists');
       return;
     }
 
@@ -82,12 +127,14 @@ const DrawerInitiator = {
     document.body.appendChild(overlay);
 
     // Event listener untuk menutup drawer saat klik overlay
-    overlay.addEventListener('click', () => {
-      console.log('Overlay clicked');
+    overlay.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('🎯 Overlay clicked');
       this._closeDrawer(drawer);
     });
 
-    console.log('Overlay created');
+    console.log('✨ Overlay created and event listener attached');
   },
 };
 

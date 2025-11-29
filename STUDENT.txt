@@ -15,3 +15,6 @@ Contoh Endpoint:
 - POST /login
 - GET /stories
 - POST /stories
+
+# Deployment
+site is live at https://ahmadtajri.github.io/peta-wisata-indonesia/

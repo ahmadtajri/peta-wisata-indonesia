@@ -7,7 +7,6 @@ const AddStoryPage = {
     return `
       <section class="add-story-page">
         <h2>Tambah Cerita Baru</h2>
-        <h2 class="sr-only">Form Tambah Cerita Wisata</h2>
         <form id="storyForm" class="story-form" enctype="multipart/form-data">
           <div class="form-group">
             <label for="description">Deskripsi</label>

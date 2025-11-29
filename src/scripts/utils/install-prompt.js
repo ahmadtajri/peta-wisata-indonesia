@@ -1,6 +1,7 @@
 const InstallPrompt = {
   deferredPrompt: null,
   isInstalled: false,
+  bannerResizeObserver: null,
 
   // ========================================
   // Initialize Install Prompt
@@ -12,13 +13,13 @@ const InstallPrompt = {
     // Listen for beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
       console.log('[Install] 💾 beforeinstallprompt event fired');
-      
+
       // Prevent default browser prompt
       e.preventDefault();
-      
+
       // Store event for later use
       this.deferredPrompt = e;
-      
+
       // Show custom install button/banner
       this.showInstallUI();
     });
@@ -29,10 +30,10 @@ const InstallPrompt = {
       this.isInstalled = true;
       this.hideInstallUI();
       this.deferredPrompt = null;
-      
+
       // Save to localStorage
       localStorage.setItem('pwa_installed', 'true');
-      
+
       // Show success message
       this.showSuccessMessage();
     });
@@ -51,15 +52,15 @@ const InstallPrompt = {
   checkInstallStatus() {
     // Check from localStorage
     const wasInstalled = localStorage.getItem('pwa_installed') === 'true';
-    
+
     // Check if running as standalone
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    
+
     // iOS Safari
     const isIOSStandalone = window.navigator.standalone === true;
-    
+
     this.isInstalled = wasInstalled || isStandalone || isIOSStandalone;
-    
+
     if (this.isInstalled) {
       console.log('[Install] ✅ App already installed');
       this.hideInstallUI();
@@ -94,10 +95,27 @@ const InstallPrompt = {
 
     document.body.appendChild(banner);
 
+    // Calculate height and set CSS variable
+    const updateBannerHeight = () => {
+      const height = banner.offsetHeight;
+      document.body.style.setProperty('--banner-height', `${height}px`);
+    };
+
+    // Initial calculation
+    updateBannerHeight();
+
+    // Observe resize
+    const resizeObserver = new ResizeObserver(() => {
+      updateBannerHeight();
+    });
+    resizeObserver.observe(banner);
+    this.bannerResizeObserver = resizeObserver;
+
     // Show animation
     setTimeout(() => {
       banner.classList.add('show');
-    }, 500);
+      document.body.classList.add('has-install-banner');
+    }, 100);
 
     // Add event listeners
     document.getElementById('install-button')?.addEventListener('click', () => {
@@ -118,8 +136,17 @@ const InstallPrompt = {
     const banner = document.getElementById('install-banner');
     if (banner) {
       banner.classList.remove('show');
+      document.body.classList.remove('has-install-banner');
+
+      // Cleanup observer
+      if (this.bannerResizeObserver) {
+        this.bannerResizeObserver.disconnect();
+        this.bannerResizeObserver = null;
+      }
+
       setTimeout(() => {
         banner.remove();
+        document.body.style.removeProperty('--banner-height');
       }, 300);
     }
   },
@@ -130,7 +157,7 @@ const InstallPrompt = {
   async promptInstall() {
     if (!this.deferredPrompt) {
       console.warn('[Install] ⚠️ Install prompt not available');
-      
+
       // Show manual install instructions
       this.showManualInstructions();
       return;
@@ -142,7 +169,7 @@ const InstallPrompt = {
 
       // Wait for user choice
       const { outcome } = await this.deferredPrompt.userChoice;
-      
+
       console.log('[Install] User choice:', outcome);
 
       if (outcome === 'accepted') {
@@ -164,9 +191,9 @@ const InstallPrompt = {
   // ========================================
   showManualInstructions() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
+
     let instructions = '';
-    
+
     if (isIOS) {
       instructions = `
         <div class="install-instructions">

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Aplikasi peta interaktif untuk menemukan destinasi wisata terbaik di Indonesia">
   <meta name="theme-color" content="#2563eb">
-  
+
   <title>Peta Wisata Indonesia</title>
   <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.json">
@@ -13,48 +14,51 @@
   <!-- Icons -->
   <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-72x72.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.png">
-  
+
   <!-- iOS Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Peta Wisata">
-  
+
   <!-- Microsoft Meta Tags -->
   <meta name="msapplication-TileColor" content="#2563eb">
   <meta name="msapplication-TileImage" content="/images/icons/icon-144x144.png">
-  
+
   <link rel="icon" type="image/png" href="./public/favicon.png" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
+
 <body>
   <header class="app-header">
     <button id="hamburgerButton" aria-label="toggle navigation">☰</button>
     <img src="public/images/logo.png" alt="Logo" class="logo">
 
     <div class="notification-toggle">
-    <button id="notificationToggle" class="notification-btn" aria-label="Toggle push notifications">
-      <span id="notificationIcon">🔔</span>
-    </button>
-  </div>
-  
-   <nav id="navigationDrawer">
-  <ul id="nav-links">
-    <li><a href="#/" data-link>Beranda</a></li>
-    <li><a href="#/about" data-link>Tentang</a></li>
-    <li id="login-link"><a href="#/login" data-link>Login</a></li>
-    <li id="register-link"><a href="#/register" data-link>Register</a></li>
-    <li id="add-story-link" class="logged-in"><a href="#/add-story" data-link>Tambah Cerita</a></li>
-    <li id="logout-link" class="logged-in"><a href="#" id="logout-btn" data-link>Logout</a></li>
-  </ul>
-</nav>
+      <button id="notificationToggle" class="notification-btn" aria-label="Toggle push notifications">
+        <span id="notificationIcon">🔔</span>
+      </button>
+    </div>
+
+    <nav id="navigationDrawer">
+      <ul id="nav-links">
+        <li><a href="#/" data-link>Beranda</a></li>
+        <li><a href="#/about" data-link>Tentang</a></li>
+        <li id="favorites-link" class="logged-in"><a href="#/favorites" data-link>❤️ Favorit</a></li>
+        <li id="login-link"><a href="#/login" data-link>Login</a></li>
+        <li id="register-link"><a href="#/register" data-link>Register</a></li>
+        <li id="add-story-link" class="logged-in"><a href="#/add-story" data-link>Tambah Cerita</a></li>
+        <li id="logout-link" class="logged-in"><a href="#" id="logout-btn" data-link>Logout</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main id="main-content"></main>
 
   <footer class="app-footer">
-    <p>&copy; 2025 Peta Wisata Indonesia. Dibuat  Dicoding API.</p>
+    <p>&copy; 2025 Peta Wisata Indonesia. Dibuat Dicoding API.</p>
   </footer>
 
-  </body>
+</body>
+
 </html>
