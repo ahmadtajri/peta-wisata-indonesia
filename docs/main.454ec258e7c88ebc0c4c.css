@@ -617,20 +617,49 @@ button[type="submit"]:hover {
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
-@media (max-width: 768px) {
-  :root {
-    --header-height: 70px;
+
+/* Tablet */
+@media (max-width: 1024px) {
+  main {
+    padding: 1.5rem;
   }
 
+  .story-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .home-page h2 {
+    font-size: 3rem;
+  }
+
+  .page-header h2 {
+    font-size: 3rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 64px;
+  }
+
+  /* Header */
   .app-header {
-    padding: 0 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .app-header .logo {
+    height: 32px;
   }
 
   #hamburgerButton {
     display: block;
-    z-index: 1002;
+    z-index: 1003;
+    position: relative;
   }
 
+  /* Navigation Drawer */
   #navigationDrawer {
     position: fixed;
     top: 0;
@@ -640,11 +669,12 @@ button[type="submit"]:hover {
     height: 100vh;
     background: var(--surface);
     flex-direction: column;
-    padding: 6rem 2rem 2rem;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+    padding: 5rem 1.5rem 2rem;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1001;
+    z-index: 1002;
     align-items: stretch;
+    overflow-y: auto;
   }
 
   #navigationDrawer.open {
@@ -659,22 +689,31 @@ button[type="submit"]:hover {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: 1000;
-    display: none;
+    z-index: 1001;
+    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
   }
 
   .drawer-overlay.open {
-    display: block;
+    visibility: visible;
     opacity: 1;
+    pointer-events: auto;
   }
 
   nav ul {
     flex-direction: column;
     width: 100%;
-    gap: 1rem;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  nav li {
+    position: relative;
+    z-index: 1;
+    list-style: none;
   }
 
   nav a {
@@ -682,6 +721,28 @@ button[type="submit"]:hover {
     text-align: center;
     padding: 1rem;
     background: #f8fafc;
+    font-size: 1rem;
+    cursor: pointer;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+    -webkit-tap-highlight-color: rgba(79, 70, 229, 0.2);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  nav a:active {
+    transform: scale(0.98);
+    background: var(--primary);
+    color: white;
   }
 
   nav a:hover,
@@ -690,20 +751,324 @@ button[type="submit"]:hover {
     color: white;
   }
 
-  .home-page h2 {
-    font-size: 2.5rem;
+  #logout-btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    background: transparent;
   }
 
+  /* Main Content */
+  main {
+    padding: 1rem;
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  /* Home Page */
+  .home-page h2 {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .home-page>p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  /* Section Header */
+  .section-header {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .section-header h3 {
+    font-size: 1.5rem !important;
+  }
+
+  .section-header>div {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .section-header button,
+  .section-header a {
+    flex: 1;
+    font-size: 0.9rem !important;
+    padding: 0.65rem 1rem !important;
+  }
+
+  /* Map */
   .map-container {
-    height: 350px;
+    height: 300px;
+    margin-bottom: 2rem;
+    border-radius: var(--radius-lg);
+    border: 2px solid white;
+  }
+
+  .map-select {
+    height: 300px;
+  }
+
+  /* Story Grid */
+  .story-list {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+  }
+
+  /* Story Cards */
+  .story-card {
+    border-radius: var(--radius-md);
+  }
+
+  .story-card img {
+    height: 200px;
+  }
+
+  .story-info {
+    padding: 1.25rem;
+  }
+
+  .story-info h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .story-info p {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .story-card a {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  /* Favorite Button */
+  .favorite-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  /* Auth & Forms */
+  .auth-page,
+  .add-story-page {
+    margin: 1rem auto;
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .auth-page h2,
+  .add-story-page h2 {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary,
+  button[type="submit"] {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  /* Detail Page */
+  .detail-story-page {
+    border-radius: var(--radius-lg);
+    margin: 0;
+  }
+
+  .detail-story-page h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    padding: 0 1.5rem;
+    padding-top: 1.5rem;
   }
 
   .story-detail .story-image {
-    height: 300px;
+    height: 250px;
   }
 
   .detail-content {
     padding: 1.5rem;
+  }
+
+  .detail-content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-content p {
+    font-size: 1rem;
+  }
+
+  /* About Page */
+  .about-page {
+    padding: 2rem 1rem;
+  }
+
+  .about-page h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-page p {
+    font-size: 1rem;
+  }
+
+  /* Favorites Page */
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.875rem;
+  }
+
+  .empty-state {
+    padding: 3rem 1.5rem;
+    margin: 0 0.5rem;
+  }
+
+  /* Footer */
+  .app-footer {
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+  }
+
+  .app-footer p {
+    font-size: 0.875rem;
+  }
+
+  /* Notifications */
+  .toast {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    transform: translateX(0) translateY(100px);
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .toast.show {
+    transform: translateX(0) translateY(0);
+  }
+
+  /* Notification Toggle */
+  .notification-toggle {
+    margin-right: 0.5rem;
+  }
+
+  .notification-btn {
+    font-size: 1.25rem;
+    padding: 0.4rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .app-header {
+    padding: 0 0.75rem;
+  }
+
+  .app-header .logo {
+    height: 28px;
+  }
+
+  main {
+    padding: 0.75rem;
+  }
+
+  .home-page h2 {
+    font-size: 1.75rem;
+  }
+
+  .home-page>p {
+    font-size: 0.95rem;
+  }
+
+  .section-header h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .map-container {
+    height: 250px;
+    border-radius: var(--radius-md);
+  }
+
+  .story-card img {
+    height: 180px;
+  }
+
+  .story-info {
+    padding: 1rem;
+  }
+
+  .story-info h3 {
+    font-size: 1.15rem;
+  }
+
+  .story-info p {
+    font-size: 0.9rem;
+  }
+
+  .auth-page,
+  .add-story-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .auth-page h2,
+  .add-story-page h2 {
+    font-size: 1.5rem;
+  }
+
+  .detail-story-page h2 {
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+
+  .detail-content {
+    padding: 1rem;
+  }
+
+  .page-header h2 {
+    font-size: 1.75rem;
+  }
+
+  #navigationDrawer {
+    width: 85%;
   }
 }
 
@@ -917,4 +1282,240 @@ button[type="submit"]:hover {
   }
 }
 
-/*# sourceMappingURL=main.cb9056e2dff00310ac77.css.map*/
+/* ========================================
+   PWA INSTALL BANNER
+   ======================================== */
+.install-banner {
+  position: fixed;
+  bottom: -100px;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  z-index: 9999;
+  transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-top: 3px solid var(--primary);
+}
+
+.install-banner.show {
+  bottom: 0;
+}
+
+.install-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.install-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.install-text {
+  flex: 1;
+}
+
+.install-text strong {
+  display: block;
+  color: var(--text-main);
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.install-text p {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.install-btn {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  flex-shrink: 0;
+}
+
+.install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+.install-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.install-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+}
+
+/* Install Toast */
+.install-toast {
+  position: fixed;
+  top: calc(var(--header-height) + 1rem);
+  right: 1rem;
+  background: #10b981;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  z-index: 10000;
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.install-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Mobile Responsive for Install Banner */
+@media (max-width: 768px) {
+  .install-banner {
+    padding: 0.875rem;
+  }
+
+  .install-banner-content {
+    padding: 0 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .install-icon {
+    font-size: 1.5rem;
+  }
+
+  .install-text strong {
+    font-size: 0.9rem;
+  }
+
+  .install-text p {
+    font-size: 0.8rem;
+  }
+
+  .install-btn {
+    padding: 0.65rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .install-close {
+    width: 32px;
+    height: 32px;
+    font-size: 1.25rem;
+  }
+
+  .install-toast {
+    left: 1rem;
+    right: 1rem;
+    top: calc(var(--header-height) + 0.5rem);
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  /* Leaflet Popup Mobile */
+  .leaflet-popup-content {
+    width: 200px !important;
+  }
+
+  .leaflet-popup-content img {
+    height: 120px;
+  }
+
+  .leaflet-popup-content h4 {
+    padding: 0.75rem 0.75rem 0.4rem;
+    font-size: 1rem;
+  }
+
+  .leaflet-popup-content p {
+    padding: 0 0.75rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .leaflet-popup-content a {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .install-banner-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .install-icon {
+    order: 1;
+  }
+
+  .install-text {
+    order: 2;
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .install-btn {
+    order: 3;
+    flex: 1;
+  }
+
+  .install-close {
+    order: 4;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY \u0026 SCREEN READER
+   ======================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  z-index: 10000;
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/*# sourceMappingURL=main.454ec258e7c88ebc0c4c.css.map*/
